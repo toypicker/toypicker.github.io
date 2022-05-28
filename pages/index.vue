@@ -1,28 +1,50 @@
 <template>
-  <v-row justify="center" align="center">
+  <v-row justify="center">
     <v-col cols="12" sm="8" md="6">
       <v-card>
-        <v-card-title class="headline"> Play session </v-card-title>
-        <v-row>
-          <v-col v-for="(play, index) in session" :key="index" cols="2">
-            <v-card elevation="2"
-              >{{ play.toy }} on {{ play.player }}
-              <v-btn v-if="playableToys.length > 0" @click="reroll(index)"
-                >Reroll</v-btn
+        <v-col
+          v-for="(play, index) in session"
+          :key="index"
+          cols="12"
+          sm="6"
+          md="2"
+        >
+          <v-card elevation="2">
+            <v-card-text align="center">
+              <span>
+                <v-btn
+                  v-if="playableToys.length > 0"
+                  color="primary"
+                  icon
+                  @click="reroll(index)"
+                  ><v-icon>mdi-refresh</v-icon></v-btn
+                >
+              </span>
+              <p class="text-h4">{{ play.toy }}</p>
+              <p class="text-h5">on</p>
+              <p class="text-h4">{{ play.player }}</p>
+            </v-card-text>
+          </v-card></v-col
+        >
+        <v-col cols="12" sm="6" md="2">
+          <v-card elevation="0"
+            ><v-card-text align="center">
+              <v-btn
+                v-if="playableToys.length > 0"
+                color="primary"
+                icon
+                @click="roll()"
               >
-            </v-card></v-col
-          >
-          <v-col cols="2" align="center">
-            <v-card elevation="2"
-              ><v-btn v-if="playableToys.length > 0" @click="roll()"
-                ><v-avatar><v-icon>mdi-plus-thick</v-icon></v-avatar></v-btn
+                <v-icon x-large>mdi-plus-thick</v-icon></v-btn
               >
               <span v-else>No more toys to play with</span>
-            </v-card>
-          </v-col>
-        </v-row>
+            </v-card-text>
+          </v-card>
+        </v-col>
         <v-card-actions
-          ><v-btn @click="newSession()">New session</v-btn></v-card-actions
+          ><v-btn outlined color="primary" @click="newSession()"
+            >New session</v-btn
+          ></v-card-actions
         >
       </v-card>
     </v-col>
@@ -63,11 +85,11 @@ export default Vue.extend({
       players: [
         {
           id: 0,
-          name: 'Mikkel',
+          name: 'Player 1',
         },
         {
           id: 1,
-          name: 'Linda',
+          name: 'Player 2',
         },
       ],
       session: [] as { toyId: number; toy: string; player: string }[],
