@@ -15,8 +15,10 @@
     <v-main class="grey lighten-3">
       <Nuxt />
     </v-main>
-    <v-dialog v-model="configDialog"
-      ><ToyConfiguration></ToyConfiguration>
+    <v-dialog v-model="configDialog" fullscreen
+      ><ToyConfiguration
+        @config:close="configDialog = false"
+      ></ToyConfiguration>
     </v-dialog>
   </v-app>
 </template>

@@ -1,6 +1,11 @@
 <template>
   <v-card>
-    <v-card-title>Toy configuration</v-card-title>
+    <v-card-title
+      >Toy configuration <v-spacer></v-spacer
+      ><v-btn outlined color="primary" @click="$emit('config:close')"
+        >Close</v-btn
+      ></v-card-title
+    >
     <v-card-text>
       <v-row class="text-h5">
         <v-col>Players</v-col>
@@ -42,7 +47,7 @@
           <v-card>
             <v-card-text>
               <v-text-field v-model="toy.name" outlined></v-text-field>
-              <v-subtitle>Applicable to</v-subtitle>
+              <v-subtitle>Roll for</v-subtitle>
               <v-switch
                 v-for="player in players"
                 :key="player.id"
@@ -51,7 +56,11 @@
                 :value="player.id"
               ></v-switch>
               <v-card-actions>
-                <v-switch v-model="toy.active" inset></v-switch>
+                <v-switch
+                  v-model="toy.active"
+                  inset
+                  label="Include in rolls"
+                ></v-switch>
                 <v-spacer></v-spacer
                 ><v-btn color="grey" outlined icon @click="removeToy(index)"
                   ><v-icon>mdi-delete</v-icon></v-btn
@@ -67,59 +76,30 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Toy } from '~/models/Toy'
+import { Player } from '~/models/Player'
+
 export default Vue.extend({
-  data() {
-    return {
-      toys: [
-        {
-          id: 0,
-          name: 'Toy 1',
-          active: true,
-          eligblePlayers: [0, 1],
-        },
-        {
-          id: 1,
-          name: 'Toy 2',
-          active: true,
-          eligblePlayers: [0],
-        },
-        {
-          id: 2,
-          name: 'Toy 3',
-          active: true,
-          eligblePlayers: [1],
-        },
-        {
-          id: 3,
-          name: 'Toy 4',
-          active: false,
-          eligblePlayers: [0, 1],
-        },
-      ],
-      players: [
-        {
-          id: 0,
-          name: 'Player 1',
-        },
-        {
-          id: 1,
-          name: 'Player 2',
-        },
-      ],
-    }
+  computed: {
+    toys(): Toy[] {
+      return this.$store.state.toys
+    },
+    players(): Player[] {
+      return this.$store.state.players
+    },
   },
   methods: {
     addPlayer() {
-      this.players.push({
+      this.$store.commit('addPlayer', {
         id: this.players.length,
         name: 'Player ' + (this.players.length + 1),
       })
     },
     removePlayer(index: number) {
-      this.players.splice(index, 1)
+      this.$store.commit('removePlayer', index)
     },
     addToy() {
-      this.toys.unshift({
+      this.$store.commit('addToy', {
         id: this.toys.length,
         name: 'Toy ' + (this.toys.length + 1),
         active: true,
@@ -127,7 +107,7 @@ export default Vue.extend({
       })
     },
     removeToy(index: number) {
-      this.toys.splice(index, 1)
+      this.$store.commit('removeToy', index)
     },
   },
 })
