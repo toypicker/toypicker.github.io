@@ -37,7 +37,6 @@
                     class="text-h5"
                     color="primary"
                     icon
-                    fab
                     x-large
                     @click="roll()"
                   >
@@ -52,7 +51,7 @@
             </v-col>
           </v-row>
         </v-container>
-        <v-card-actions
+        <v-card-actions v-show="session.length > 0"
           ><v-btn outlined color="primary" @click="newSession()"
             >New session</v-btn
           ></v-card-actions
