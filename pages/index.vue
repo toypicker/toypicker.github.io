@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-col cols="12" sm="8" md="6">
-      <v-card>
+      <v-card v-if="players.length > 0 && toys.length > 0">
         <v-container>
           <v-row align="center">
             <v-col
@@ -52,6 +52,13 @@
           ></v-card-actions
         >
       </v-card>
+      <v-card v-else>
+        <v-row>
+          <v-col align="center">
+            <v-card-text>Add players and toys to begin</v-card-text>
+          </v-col>
+        </v-row>
+      </v-card>
     </v-col>
   </v-row>
 </template>
@@ -69,10 +76,10 @@ export default Vue.extend({
 
   computed: {
     toys(): Toy[] {
-      return this.$store.state.toys
+      return this.$store.state.toys?.toys ?? []
     },
     players(): Player[] {
-      return this.$store.state.players
+      return this.$store.state.players?.players ?? []
     },
 
     playableToys(): { id: number; name: string; players: string[] }[] {

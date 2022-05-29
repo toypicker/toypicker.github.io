@@ -2,9 +2,7 @@
   <v-card>
     <v-card-title
       >Toy configuration <v-spacer></v-spacer
-      ><v-btn outlined color="primary" @click="$emit('config:close')"
-        >Close</v-btn
-      ></v-card-title
+      ><v-btn outlined color="primary" @click="save">Save</v-btn></v-card-title
     >
     <v-card-text>
       <v-row class="text-h5">
@@ -47,7 +45,7 @@
           <v-card>
             <v-card-text>
               <v-text-field v-model="toy.name" outlined></v-text-field>
-              <v-subtitle>Roll for</v-subtitle>
+              <span>Roll for</span>
               <v-switch
                 v-for="player in players"
                 :key="player.id"
@@ -76,30 +74,58 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Toy } from '~/models/Toy'
 import { Player } from '~/models/Player'
-
+import { Toy } from '~/models/Toy'
 export default Vue.extend({
+  data() {
+    return {
+      toys: [] as Toy[],
+      players: [] as Player[],
+    }
+  },
+
   computed: {
-    toys(): Toy[] {
-      return this.$store.state.toys
+    savedToys(): Toy[] {
+      return this.$store.state.toys?.toys ?? []
     },
-    players(): Player[] {
-      return this.$store.state.players
+    savedPlayers(): Player[] {
+      return this.$store.state.players?.players ?? []
     },
   },
+
+  // make sure config is loaded if data is available after mounted happens
+  watch: {
+    savedToys() {
+      this.init()
+    },
+    savedPlayers() {
+      this.init()
+    },
+  },
+
+  mounted() {
+    this.init()
+  },
+
   methods: {
+    init() {
+      this.toys = this.savedToys.map((toy: Toy) => ({ ...toy }))
+      this.players = this.savedPlayers.map((player: Player) => ({
+        ...player,
+      }))
+    },
+
     addPlayer() {
-      this.$store.commit('addPlayer', {
+      this.players.push({
         id: this.players.length,
         name: 'Player ' + (this.players.length + 1),
       })
     },
     removePlayer(index: number) {
-      this.$store.commit('removePlayer', index)
+      this.players.splice(index, 1)
     },
     addToy() {
-      this.$store.commit('addToy', {
+      this.toys.unshift({
         id: this.toys.length,
         name: 'Toy ' + (this.toys.length + 1),
         active: true,
@@ -107,7 +133,12 @@ export default Vue.extend({
       })
     },
     removeToy(index: number) {
-      this.$store.commit('removeToy', index)
+      this.toys.splice(index, 1)
+    },
+    save() {
+      this.$store.commit('setToys', this.toys)
+      this.$store.commit('setPlayers', this.players)
+      this.$emit('config:close')
     },
   },
 })
