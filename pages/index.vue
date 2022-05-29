@@ -52,7 +52,7 @@
           ></v-card-actions
         >
       </v-card>
-      <v-card v-else>
+      <v-card v-else height="200">
         <v-row>
           <v-col align="center">
             <v-card-text>Add players and toys to begin</v-card-text>
