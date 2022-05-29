@@ -13,7 +13,9 @@
     </v-app-bar>
 
     <v-main class="grey lighten-3">
-      <Nuxt />
+      <v-container>
+        <Nuxt />
+      </v-container>
     </v-main>
     <v-dialog v-model="configDialog" fullscreen
       ><ToyConfiguration
