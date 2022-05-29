@@ -16,9 +16,10 @@
                   <span>
                     <v-btn
                       v-if="playableToys.length > 0"
-                      color="primary"
                       icon
-                      @click="reroll(index)"
+                      large
+                      color="primary"
+                      @click="spin(index)"
                       ><v-icon>mdi-refresh</v-icon></v-btn
                     >
                   </span>
@@ -72,10 +73,32 @@
 import Vue from 'vue'
 import { Player } from '~/models/Player'
 import { Toy } from '~/models/Toy'
+
+/*
+    @t is the current time (or position) of the tween. This can be seconds or frames, steps, seconds, ms, whatever – as long as the unit is the same as is used for the total time [3].
+    @b is the beginning value of the property.
+    @c is the change between the beginning and destination value of the property.
+    @d is the total time of the tween.
+*/
+const easeOutQuad = function (
+  t: number,
+  b: number,
+  c: number,
+  d: number
+): number {
+  t /= d
+  return -c * t * (t - 2) + b
+}
+
+const spins = 15
+const minTime = 10
+const maxTime = 200
+
 export default Vue.extend({
   data() {
     return {
       session: [] as { toyId: number; toy: string; player: string }[],
+      rollTime: 2,
     }
   },
 
@@ -119,9 +142,22 @@ export default Vue.extend({
     },
     roll() {
       this.session.push(this.createRandomPlay())
+      setTimeout(() => {
+        this.spin(this.session.length - 1)
+      }, minTime)
     },
     reroll(index: number) {
       this.session.splice(index, 1, this.createRandomPlay())
+    },
+    spin(index: number) {
+      const position = 0
+      const spinner = (position: number) => {
+        setTimeout(() => {
+          this.reroll(index)
+          if (position < spins) spinner(++position)
+        }, easeOutQuad(position, minTime, maxTime, spins))
+      }
+      spinner(position)
     },
     newSession() {
       this.session = []
