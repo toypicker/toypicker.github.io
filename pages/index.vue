@@ -34,12 +34,18 @@
                 ><v-card-text align="center">
                   <v-btn
                     v-if="playableToys.length > 0"
+                    class="text-h5"
                     color="primary"
                     icon
+                    fab
+                    x-large
                     @click="roll()"
                   >
-                    <v-icon x-large>mdi-plus-thick</v-icon></v-btn
-                  >
+                    <v-img
+                      max-width="56"
+                      src="android-chrome-512x512.png"
+                    ></v-img>
+                  </v-btn>
                   <span v-else>No more toys to play with</span>
                 </v-card-text>
               </v-card>
