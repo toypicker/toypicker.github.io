@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar app color="white" elevation="1">
       <v-container class="py-0 fill-height">
-        <span>Toy picker</span>
+        <span>Random toy picker</span>
         <v-spacer></v-spacer>
 
         <v-spacer></v-spacer>

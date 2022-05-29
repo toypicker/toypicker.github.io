@@ -9,13 +9,31 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - toypicker',
-    title: 'toypicker',
+    titleTemplate: 'Random toy picker',
+    title: 'Random toy picker',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' },
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Select toys for your play sessions by doing random rolls',
+      },
+      {
+        hid: 'og:description',
+        name: 'og:description',
+        content: 'Select toys for your play sessions by doing random rolls',
+      },
+      {
+        hid: 'og:title',
+        name: 'og:title',
+        content: 'Toy picker',
+      },
+      {
+        hid: 'og:site_name',
+        name: 'og:site_name',
+        content: 'Toy picker',
+      },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
