@@ -41,57 +41,67 @@
       </v-row>
 
       <v-row>
-        <!-- <v-col v-for="(toy, index) in toys" :key="toy.id" cols="12"> -->
         <v-expansion-panels v-model="expansion" multiple>
-          <v-expansion-panel v-for="toy in toys" :key="toy.id">
-            <v-expansion-panel-header
-              ><span style="display: contents"
-                >{{ toy.name }}
-                <v-spacer></v-spacer>
-                <v-btn
-                  v-if="toy.active"
-                  icon
-                  color="yellow darken-1"
-                  @click.stop="toy.active = false"
-                  ><v-icon>mdi-lightbulb</v-icon></v-btn
-                >
-                <v-btn v-else icon color="grey" @click.stop="toy.active = true"
-                  ><v-icon>mdi-lightbulb-off</v-icon></v-btn
-                >
-              </span>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-text-field
-                v-model="toy.name"
-                outlined
-                label="Name"
-              ></v-text-field>
-              <span>Roll for</span>
-              <v-switch
-                v-for="player in players"
-                :key="player.id"
-                v-model="toy.eligblePlayers"
-                :label="player.name"
-                :value="player.id"
-              ></v-switch>
-
-              <v-row justify="center" align="center">
-                <v-col>
+          <draggable :list="toys" style="width: 100%">
+            <transition-group>
+              <v-expansion-panel v-for="toy in toys" :key="toy.id">
+                <v-expansion-panel-header
+                  ><span style="display: contents"
+                    >{{ toy.name }}
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      v-if="toy.active"
+                      icon
+                      color="yellow darken-1"
+                      @click.stop="toy.active = false"
+                      ><v-icon>mdi-lightbulb</v-icon></v-btn
+                    >
+                    <v-btn
+                      v-else
+                      icon
+                      color="grey"
+                      @click.stop="toy.active = true"
+                      ><v-icon>mdi-lightbulb-off</v-icon></v-btn
+                    >
+                  </span>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-text-field
+                    v-model="toy.name"
+                    outlined
+                    label="Name"
+                  ></v-text-field>
+                  <span>Roll for</span>
                   <v-switch
-                    v-model="toy.active"
-                    label="Include in rolls"
+                    v-for="player in players"
+                    :key="player.id"
+                    v-model="toy.eligblePlayers"
+                    :label="player.name"
+                    :value="player.id"
                   ></v-switch>
-                </v-col>
-                <v-col cols="4" align="right">
-                  <v-btn color="grey" outlined icon @click="removeToy(index)"
-                    ><v-icon>mdi-delete</v-icon></v-btn
-                  >
-                </v-col>
-              </v-row>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
+
+                  <v-row justify="center" align="center">
+                    <v-col>
+                      <v-switch
+                        v-model="toy.active"
+                        label="Include in rolls"
+                      ></v-switch>
+                    </v-col>
+                    <v-col cols="4" align="right">
+                      <v-btn
+                        color="grey"
+                        outlined
+                        icon
+                        @click="removeToy(index)"
+                        ><v-icon>mdi-delete</v-icon></v-btn
+                      >
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </transition-group>
+          </draggable>
         </v-expansion-panels>
-        <!-- </v-col> -->
       </v-row>
     </v-card-text>
   </v-card>
@@ -99,14 +109,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import draggable from 'vuedraggable'
 import { Player } from '~/models/Player'
 import { Toy } from '~/models/Toy'
+
 export default Vue.extend({
+  components: {
+    draggable,
+  },
   data() {
     return {
       toys: [] as Toy[],
       players: [] as Player[],
       expansion: [],
+      drag: false,
     }
   },
 
