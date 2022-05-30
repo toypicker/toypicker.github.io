@@ -42,12 +42,15 @@
 
       <v-row>
         <v-expansion-panels v-model="expansion" multiple>
-          <draggable :list="toys" style="width: 100%">
+          <draggable :list="toys" style="width: 100%" v-bind="dragOptions">
             <transition-group>
               <v-expansion-panel v-for="toy in toys" :key="toy.id">
                 <v-expansion-panel-header
-                  ><span style="display: contents"
-                    >{{ toy.name }}
+                  ><span style="display: contents">
+                    <v-icon class="drag-handle" @click.stop
+                      >mdi-drag-vertical</v-icon
+                    >
+                    {{ toy.name }}
                     <v-spacer></v-spacer>
                     <v-btn
                       v-if="toy.active"
@@ -122,7 +125,9 @@ export default Vue.extend({
       toys: [] as Toy[],
       players: [] as Player[],
       expansion: [],
-      drag: false,
+      dragOptions: {
+        handle: '.drag-handle',
+      },
     }
   },
 
