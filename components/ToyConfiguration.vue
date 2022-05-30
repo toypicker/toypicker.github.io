@@ -31,7 +31,7 @@
         </v-col>
       </v-row>
       <v-row class="text-h5">
-        <v-col>Toys</v-col>
+        <v-col>Toys ({{ toys.length }})</v-col>
 
         <v-col align="right"
           ><v-btn icon color="primary" outlined @click="addToy()"
@@ -41,10 +41,31 @@
       </v-row>
 
       <v-row>
-        <v-col v-for="(toy, index) in toys" :key="toy.id" cols="12">
-          <v-card>
-            <v-card-text>
-              <v-text-field v-model="toy.name" outlined></v-text-field>
+        <!-- <v-col v-for="(toy, index) in toys" :key="toy.id" cols="12"> -->
+        <v-expansion-panels v-model="expansion" multiple>
+          <v-expansion-panel v-for="toy in toys" :key="toy.id">
+            <v-expansion-panel-header
+              ><span style="display: contents"
+                >{{ toy.name }}
+                <v-spacer></v-spacer>
+                <v-btn
+                  v-if="toy.active"
+                  icon
+                  color="yellow darken-1"
+                  @click.stop="toy.active = false"
+                  ><v-icon>mdi-lightbulb</v-icon></v-btn
+                >
+                <v-btn v-else icon color="grey" @click.stop="toy.active = true"
+                  ><v-icon>mdi-lightbulb-off</v-icon></v-btn
+                >
+              </span>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-text-field
+                v-model="toy.name"
+                outlined
+                label="Name"
+              ></v-text-field>
               <span>Roll for</span>
               <v-switch
                 v-for="player in players"
@@ -53,20 +74,24 @@
                 :label="player.name"
                 :value="player.id"
               ></v-switch>
-              <v-card-actions>
-                <v-switch
-                  v-model="toy.active"
-                  inset
-                  label="Include in rolls"
-                ></v-switch>
-                <v-spacer></v-spacer
-                ><v-btn color="grey" outlined icon @click="removeToy(index)"
-                  ><v-icon>mdi-delete</v-icon></v-btn
-                >
-              </v-card-actions>
-            </v-card-text>
-          </v-card></v-col
-        >
+
+              <v-row justify="center" align="center">
+                <v-col>
+                  <v-switch
+                    v-model="toy.active"
+                    label="Include in rolls"
+                  ></v-switch>
+                </v-col>
+                <v-col cols="4" align="right">
+                  <v-btn color="grey" outlined icon @click="removeToy(index)"
+                    ><v-icon>mdi-delete</v-icon></v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        <!-- </v-col> -->
       </v-row>
     </v-card-text>
   </v-card>
@@ -81,6 +106,7 @@ export default Vue.extend({
     return {
       toys: [] as Toy[],
       players: [] as Player[],
+      expansion: [],
     }
   },
 
