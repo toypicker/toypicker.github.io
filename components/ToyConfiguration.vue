@@ -43,66 +43,64 @@
       <v-row>
         <v-expansion-panels v-model="expansion" multiple>
           <draggable :list="toys" style="width: 100%" v-bind="dragOptions">
-            <transition-group>
-              <v-expansion-panel v-for="toy in toys" :key="toy.id">
-                <v-expansion-panel-header
-                  ><span style="display: contents">
-                    <v-icon class="drag-handle" @click.stop
-                      >mdi-drag-vertical</v-icon
-                    >
-                    {{ toy.name }}
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      v-if="toy.active"
-                      icon
-                      color="yellow darken-1"
-                      @click.stop="toy.active = false"
-                      ><v-icon>mdi-lightbulb</v-icon></v-btn
-                    >
-                    <v-btn
-                      v-else
-                      icon
-                      color="grey"
-                      @click.stop="toy.active = true"
-                      ><v-icon>mdi-lightbulb-off</v-icon></v-btn
-                    >
-                  </span>
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-text-field
-                    v-model="toy.name"
-                    outlined
-                    label="Name"
-                  ></v-text-field>
-                  <span>Roll for</span>
-                  <v-switch
-                    v-for="player in players"
-                    :key="player.id"
-                    v-model="toy.eligblePlayers"
-                    :label="player.name"
-                    :value="player.id"
-                  ></v-switch>
+            <v-expansion-panel
+              v-for="toy in toys"
+              :key="toy.id"
+              class="no-transition"
+            >
+              <v-expansion-panel-header
+                ><span style="display: contents">
+                  <v-icon class="drag-handle" @click.stop
+                    >mdi-drag-vertical</v-icon
+                  >
+                  {{ toy.name }}
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    v-if="toy.active"
+                    icon
+                    color="yellow darken-1"
+                    @click.stop="toy.active = false"
+                    ><v-icon>mdi-lightbulb</v-icon></v-btn
+                  >
+                  <v-btn
+                    v-else
+                    icon
+                    color="grey"
+                    @click.stop="toy.active = true"
+                    ><v-icon>mdi-lightbulb-off</v-icon></v-btn
+                  >
+                </span>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-text-field
+                  v-model="toy.name"
+                  outlined
+                  label="Name"
+                ></v-text-field>
+                <span>Roll for</span>
+                <v-switch
+                  v-for="player in players"
+                  :key="player.id"
+                  v-model="toy.eligblePlayers"
+                  :label="player.name"
+                  :value="player.id"
+                ></v-switch>
 
-                  <v-row justify="center" align="center">
-                    <v-col>
-                      <v-switch
-                        v-model="toy.active"
-                        label="Include in rolls"
-                      ></v-switch>
-                    </v-col>
-                    <v-col cols="4" align="right">
-                      <v-btn
-                        color="grey"
-                        outlined
-                        icon
-                        @click="removeToy(index)"
-                        ><v-icon>mdi-delete</v-icon></v-btn
-                      >
-                    </v-col>
-                  </v-row>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </transition-group>
+                <v-row justify="center" align="center">
+                  <v-col>
+                    <v-switch
+                      v-model="toy.active"
+                      label="Include in rolls"
+                    ></v-switch>
+                  </v-col>
+                  <v-col cols="4" align="right">
+                    <v-btn color="grey" outlined icon @click="removeToy(index)"
+                      ><v-icon>mdi-delete</v-icon></v-btn
+                    >
+                  </v-col>
+                </v-row>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
           </draggable>
         </v-expansion-panels>
       </v-row>
@@ -128,6 +126,7 @@ export default Vue.extend({
       dragOptions: {
         handle: '.drag-handle',
       },
+      selected: [] as number[],
     }
   },
 
@@ -187,6 +186,21 @@ export default Vue.extend({
       this.$store.commit('setPlayers', this.players)
       this.$emit('config:close')
     },
+    isSelected(id: number) {
+      return this.selected.includes(id)
+    },
+    toggleSelected(id: number) {
+      console.log('toggle ' + id)
+      const indexOfId = this.selected.indexOf(id)
+      if (indexOfId === -1) this.selected.push(id)
+      else this.selected.splice(indexOfId, 1)
+    },
   },
 })
 </script>
+
+<style>
+.no-transition {
+  transition: none !important;
+}
+</style>
