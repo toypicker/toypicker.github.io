@@ -1,78 +1,98 @@
 <template>
-  <v-row justify="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card v-if="players.length > 0 && toys.length > 0">
-        <v-container>
-          <v-row align="center">
-            <v-col
-              v-for="(play, index) in session"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-card elevation="2">
-                <v-card-text align="center">
-                  <span>
+  <v-container>
+    <v-row>
+      <v-col
+        ><v-btn
+          v-show="session.length > 0"
+          outlined
+          color="primary"
+          @click="newSession()"
+          >New session</v-btn
+        ></v-col
+      >
+      <v-col align="right"
+        ><v-btn icon large @click="configDialog = !configDialog"
+          ><v-icon>mdi-cog</v-icon></v-btn
+        >
+      </v-col>
+    </v-row>
+
+    <v-row justify="center">
+      <v-col cols="12" sm="8" md="6">
+        <v-card v-if="players.length > 0 && toys.length > 0">
+          <v-container>
+            <v-row align="center">
+              <v-col
+                v-for="(play, index) in session"
+                :key="index"
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <v-card elevation="2">
+                  <v-card-text align="center">
+                    <span>
+                      <v-btn
+                        v-if="playableToys.length > 0"
+                        icon
+                        large
+                        color="primary"
+                        @click="spin(index)"
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </span>
+                    <p class="text-h4">{{ play.toy }}</p>
+                    <!-- <p class="text-h5">on</p> -->
+                    <v-icon x-large>mdi-arrow-down</v-icon>
+                    <p class="text-h4">{{ play.player }}</p>
+                  </v-card-text>
+                </v-card></v-col
+              >
+              <v-col cols="12" sm="6" md="4">
+                <v-card elevation="0" height="100%"
+                  ><v-card-text align="center">
                     <v-btn
                       v-if="playableToys.length > 0"
-                      icon
-                      large
+                      class="text-h5"
                       color="primary"
-                      @click="spin(index)"
-                      ><v-icon>mdi-refresh</v-icon></v-btn
+                      icon
+                      x-large
+                      @click="spin(session.length)"
                     >
-                  </span>
-                  <p class="text-h4">{{ play.toy }}</p>
-                  <!-- <p class="text-h5">on</p> -->
-                  <v-icon x-large>mdi-arrow-down</v-icon>
-                  <p class="text-h4">{{ play.player }}</p>
-                </v-card-text>
-              </v-card></v-col
-            >
-            <v-col cols="12" sm="6" md="4">
-              <v-card elevation="0" height="100%"
-                ><v-card-text align="center">
-                  <v-btn
-                    v-if="playableToys.length > 0"
-                    class="text-h5"
-                    color="primary"
-                    icon
-                    x-large
-                    @click="roll()"
-                  >
-                    <v-img
-                      max-width="56"
-                      src="android-chrome-512x512.png"
-                    ></v-img>
-                  </v-btn>
-                  <span v-else>No more toys to play with</span>
-                </v-card-text>
-              </v-card>
+                      <v-img
+                        max-width="56"
+                        src="android-chrome-512x512.png"
+                      ></v-img>
+                    </v-btn>
+                    <span v-else>No more toys to play with</span>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card>
+        <v-card v-else height="200">
+          <v-row>
+            <v-col align="center">
+              <v-card-text>Add players and toys to begin</v-card-text>
             </v-col>
           </v-row>
-        </v-container>
-        <v-card-actions v-show="session.length > 0"
-          ><v-btn outlined color="primary" @click="newSession()"
-            >New session</v-btn
-          ></v-card-actions
-        >
-      </v-card>
-      <v-card v-else height="200">
-        <v-row>
-          <v-col align="center">
-            <v-card-text>Add players and toys to begin</v-card-text>
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-col>
-  </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-dialog v-model="configDialog" fullscreen
+      ><ToyConfiguration
+        @config:close="configDialog = false"
+      ></ToyConfiguration>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Player } from '~/models/Player'
 import { Toy } from '~/models/Toy'
+import ToyConfiguration from '@/components/ToyConfiguration.vue'
 
 /*
     @t is the current time (or position) of the tween. This can be seconds or frames, steps, seconds, ms, whatever – as long as the unit is the same as is used for the total time [3].
@@ -95,10 +115,14 @@ const minTime = 10
 const maxTime = 200
 
 export default Vue.extend({
+  components: {
+    ToyConfiguration,
+  },
   data() {
     return {
       session: [] as { toyId: number; toy: string; player: string }[],
       rollTime: 2,
+      configDialog: false,
     }
   },
 
