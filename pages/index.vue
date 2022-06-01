@@ -121,7 +121,6 @@ export default Vue.extend({
   data() {
     return {
       session: [] as { toyId: number; toy: string; player: string }[],
-      rollTime: 2,
       configDialog: false,
     }
   },
@@ -164,20 +163,15 @@ export default Vue.extend({
 
       return { toyId: randomToy.id, toy: randomToy.name, player: randomPlayer }
     },
-    roll() {
-      this.session.push(this.createRandomPlay())
-      setTimeout(() => {
-        this.spin(this.session.length - 1)
-      }, minTime)
-    },
-    reroll(index: number) {
+    roll(index: number) {
       this.session.splice(index, 1, this.createRandomPlay())
     },
     spin(index: number) {
       const position = 0
       const spinner = (position: number) => {
         setTimeout(() => {
-          this.reroll(index)
+          if (!this.playableToys.length) return
+          this.roll(index)
           if (position < spins) spinner(++position)
         }, easeOutQuad(position, minTime, maxTime, spins))
       }
