@@ -10,14 +10,14 @@
           >New session</v-btn
         ></v-col
       >
-      <v-col align="right"
+      <v-col v-if="readyToPlay()" align="right"
         ><v-btn icon large @click="configDialog = !configDialog"
           ><v-icon>mdi-cog</v-icon></v-btn
         >
       </v-col>
     </v-row>
 
-    <v-row v-if="players.length > 0 && toys.length > 0" justify="center">
+    <v-row v-if="readyToPlay()" justify="center">
       <v-col cols="12" sm="8" md="6">
         <v-row align="center">
           <v-col
@@ -50,7 +50,6 @@
             <v-card-text align="center">
               <v-btn
                 v-if="playableToys.length > 0"
-                class="text-h5"
                 color="primary"
                 icon
                 x-large
@@ -65,12 +64,25 @@
       </v-col>
     </v-row>
 
-    <v-row v-else height="200">
+    <v-row v-else>
       <v-col>
         <v-card>
           <v-row>
             <v-col align="center">
-              <v-card-text>Add players and toys to begin</v-card-text>
+              <v-card-text>
+                <v-row><v-col>Add players and toys to begin</v-col></v-row>
+                <v-row>
+                  <v-col>
+                    <v-btn
+                      icon
+                      fab
+                      x-large
+                      @click="configDialog = !configDialog"
+                      ><v-icon class="text-h3">mdi-cog</v-icon></v-btn
+                    >
+                  </v-col>
+                </v-row>
+              </v-card-text>
             </v-col>
           </v-row>
         </v-card>
@@ -176,6 +188,9 @@ export default Vue.extend({
     },
     newSession() {
       this.session = []
+    },
+    readyToPlay() {
+      return this.players.length > 0 && this.toys.length > 0
     },
   },
 })
