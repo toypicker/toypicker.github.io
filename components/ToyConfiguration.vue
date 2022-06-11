@@ -1,9 +1,26 @@
 <template>
   <v-card>
     <v-card-title
-      >Toy configuration <v-spacer></v-spacer
-      ><v-btn outlined color="primary" @click="save">Save</v-btn></v-card-title
-    >
+      ><v-btn outlined color="primary" @click="save">Save</v-btn>
+      <v-btn style="margin-left: 5px" outlined color="red" @click="cancel"
+        >Cancel</v-btn
+      >
+      <v-spacer></v-spacer>
+      <v-btn color="primary" icon @click="download"
+        ><v-icon>mdi-cloud-download</v-icon></v-btn
+      >
+      <v-btn input color="primary" icon @click="$refs.uploadInput.click()"
+        ><v-icon>mdi-cloud-upload</v-icon></v-btn
+      >
+      <input
+        ref="uploadInput"
+        style="display: none"
+        type="file"
+        accept="application/json"
+        @change="upload"
+      />
+    </v-card-title>
+    <v-card-title>Toy configuration</v-card-title>
     <v-card-text>
       <v-row class="text-h5">
         <v-col>Players</v-col>
@@ -111,6 +128,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import draggable from 'vuedraggable'
+import { saveAs } from 'file-saver'
 import { Player } from '~/models/Player'
 import { Toy } from '~/models/Toy'
 
@@ -181,6 +199,11 @@ export default Vue.extend({
     removeToy(index: number) {
       this.toys.splice(index, 1)
     },
+
+    cancel() {
+      this.init()
+      this.$emit('config:close')
+    },
     save() {
       this.$store.commit('setToys', this.toys)
       this.$store.commit('setPlayers', this.players)
@@ -190,10 +213,31 @@ export default Vue.extend({
       return this.selected.includes(id)
     },
     toggleSelected(id: number) {
-      console.log('toggle ' + id)
       const indexOfId = this.selected.indexOf(id)
       if (indexOfId === -1) this.selected.push(id)
       else this.selected.splice(indexOfId, 1)
+    },
+    download() {
+      const text = JSON.stringify({ players: this.players, toys: this.toys })
+      const blob = new Blob([text], {
+        type: 'application/json;charset=utf-8',
+      })
+      saveAs(
+        blob,
+        `toypicker-${new Date().toISOString().substring(0, 10)}.json`
+      )
+    },
+    upload() {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (!e?.target?.result) return
+        const data = JSON.parse(e.target.result.toString())
+        this.players = data.players
+        this.toys = data.toys
+      }
+      const input = this.$refs.uploadInput as HTMLInputElement
+      if (!input.files?.length) return
+      reader.readAsText(input.files[0])
     },
   },
 })
